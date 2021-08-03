@@ -4,7 +4,7 @@ var videoStats = [];
 var audioStats = [];
 
 function init() {
-  var url = 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd';
+  var url = 'https://media.axprod.net/TestVectors/v7-Clear/Manifest_AudioOnly.mpd';
   var videoElement = document.querySelector('.videoContainer video');
   player = dashjs.MediaPlayer().create();
 
@@ -23,7 +23,6 @@ init();
 setListeners();
 
 function onVideoEnd() {
-  saveStats(videoStats, audioStats);
   clearData();
   timeElapsed = 0;
   //pause video
@@ -124,7 +123,7 @@ function getDashData(event, type) {
 
   }
 
-  videoStats[timeElapsed] = {
+  let data = {
     'time' : event.time,
     'buffer_length' : bufferLengthValue,
     'bitrate_downloading' : bandwidthValue,
@@ -136,6 +135,18 @@ function getDashData(event, type) {
     'download' : download,
     'ratio' : ratio,
     'type' : type,
+  }
+
+  if( type == 'video' ){
+    if(typeof  videoStats[timeElapsed] === 'undefined') {
+      videoStats[timeElapsed] = data;
+    }
+  }
+
+  if( type == 'audio' ){
+    if(typeof audioStats[timeElapsed] === 'undefined') {
+      audioStats[timeElapsed] = data;
+    }
   }
 }
 
@@ -236,6 +247,6 @@ async function saveStats(videoData, audioData) {
     }
 
   } catch (error) {
-    console.log('Error: ', error);
+
   }
 }

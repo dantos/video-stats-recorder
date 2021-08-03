@@ -23,6 +23,7 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 Route::post('video/{video}/stats', [VideoController::class, 'storeVideoStats'])->name('video.stats');
+Route::get('video/{video}/stats', [VideoController::class, 'getVideoStats'])->name('video.stats');
 
 
 require __DIR__.'/auth.php';

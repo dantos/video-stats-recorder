@@ -53,4 +53,7 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('js/dash.all.min.js') }}"></script>
+    <script src="{{ asset('js/ControlBar.js') }}"></script>
+    <script src="{{ asset('js/video.js') }}"></script>
 </x-app-layout>
