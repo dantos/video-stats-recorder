@@ -15,7 +15,7 @@ function init() {
 
 function setListeners() {
   player.on(dashjs.MediaPlayer.events['PLAYBACK_TIME_UPDATED'], startStatsTracking);
-  player.on(dashjs.MediaPlayer.events['PLAYBACK_PAUSED'], saveStats);
+  player.on(dashjs.MediaPlayer.events['PLAYBACK_PAUSED'], onVideoPaused);
   player.on(dashjs.MediaPlayer.events['PLAYBACK_ENDED'], onVideoEnd);
 }
 
@@ -23,15 +23,24 @@ init();
 setListeners();
 
 function onVideoEnd() {
+  saveStats(videoStats, audioStats);
   clearData();
+  timeElapsed = 0;
   //pause video
-  //showModal
+  //showModal if not showed before
+}
+
+function onVideoPaused() {
+
+  //show modal if more than 15 secs
+  saveStats(videoStats, audioStats);
+  clearData();
+
 }
 
 function clearData() {
   videoStats = [];
   audioStats = [];
-  timeElapsed = 0;
 }
 
 function startStatsTracking(e){
@@ -49,7 +58,8 @@ function getDashData(event, type) {
   }
 
   if( timeElapsed >= 5 && timeElapsed % 5 == 0){
-    saveStats();
+    saveStats(videoStats, audioStats);
+    clearData();
   }
 
   var streamInfo = player.getActiveStream().getStreamInfo();
@@ -115,7 +125,7 @@ function getDashData(event, type) {
   }
 
   videoStats[timeElapsed] = {
-    'time' : timeElapsed,
+    'time' : event.time,
     'buffer_length' : bufferLengthValue,
     'bitrate_downloading' : bandwidthValue,
     'index_downloading' : pendingIndex,
@@ -125,6 +135,7 @@ function getDashData(event, type) {
     'latency' : latency,
     'download' : download,
     'ratio' : ratio,
+    'type' : type,
   }
 }
 
@@ -199,12 +210,30 @@ function calculateHTTPMetrics(type, requests) {
   return null;
 }
 
-async function saveStats() {
-  const url = '';
+async function ajaxService(url, params, method) {
+  return await $.ajax( {
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    url: url,
+    type: method,
+    dataType: 'json',
+    data: { data : params }
+  });
+}
+
+async function saveStats(videoData, audioData) {
+  const url = 'video/1/stats';
 
   try {
-    const videoResult = await ajaxService(url, videoStats, 'POST');
-    const audioResult = await ajaxService(url, audioStats, 'POST');
+
+    if( videoData !== '' ){
+      await ajaxService(url, videoData, 'POST');
+    }
+
+    if( audioData !== '' ){
+      await ajaxService(url, audioData, 'POST');
+    }
 
   } catch (error) {
     console.log('Error: ', error);

@@ -27,6 +27,7 @@ class CreateVideoStatsTable extends Migration
 	        $table->string('latency')->nullable();
 	        $table->string('download')->nullable();
 	        $table->string('ratio')->nullable();
+	        $table->string('type')->nullable();
             $table->timestamps();
         });
     }
