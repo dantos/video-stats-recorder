@@ -1,6 +1,8 @@
 <?php
 
 	use App\Http\Controllers\VideoController;
+	use App\Models\Video;
+	use Illuminate\Support\Facades\Redirect;
 	use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,12 +17,20 @@
 */
 
 Route::get('/', function () {
-    return view('home');
+	$videos = Video::all();
+    return view('home', compact('videos'));
 })->name('home');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+
+	if( Auth::user()->role !== 'admin' ){
+		return Redirect::route('home');
+	}
+
+	$videos = Video::all();
+    return view('dashboard', compact('videos'));
+
+})->middleware('auth')->name('dashboard');
 
 Route::post('video/{video}/stats', [VideoController::class, 'storeVideoStats'])->name('video.stats');
 Route::get('video/{video}/stats', [VideoController::class, 'getVideoStats'])->name('video.stats');

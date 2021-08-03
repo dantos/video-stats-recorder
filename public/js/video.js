@@ -1,16 +1,18 @@
 var player;
+var videoId;
 var timeElapsed = 0;
 var videoStats = [];
 var audioStats = [];
+var url = 'https://dash.akamaized.net/dash264/TestCases/1a/sony/SNE_DASH_SD_CASE1A_REVISED.mpd';
 
 function init() {
-  var url = 'https://media.axprod.net/TestVectors/v7-Clear/Manifest_AudioOnly.mpd';
   var videoElement = document.querySelector('.videoContainer video');
   player = dashjs.MediaPlayer().create();
-
   player.initialize(videoElement, url, true);
   var controlbar = new ControlBar(player);
   controlbar.initialize();
+
+  setListeners();
 }
 
 function setListeners() {
@@ -20,7 +22,12 @@ function setListeners() {
 }
 
 init();
-setListeners();
+
+
+function stopVideo() {
+  player.reset();
+  player.destroy();
+}
 
 function onVideoEnd() {
   clearData();
@@ -234,7 +241,7 @@ async function ajaxService(url, params, method) {
 }
 
 async function saveStats(videoData, audioData) {
-  const url = 'video/1/stats';
+  const url = 'video/'+videoId+'/stats';
 
   try {
 

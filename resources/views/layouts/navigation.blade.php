@@ -15,9 +15,13 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @if(Auth::check())
+                        @if(Auth::user()->role == 'admin')
+                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                                {{ __('Dashboard') }}
+                            </x-nav-link>
+                        @endif
+                    @endif
                 </div>
             </div>
 
@@ -52,9 +56,7 @@
                             <form method="POST" action="{{ route('login') }}">
                                 @csrf
 
-                                <x-dropdown-link :href="route('login')"
-                                                 onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
+                                <x-dropdown-link :href="route('login')">
                                     {{ __('Log In') }}
                                 </x-dropdown-link>
                             </form>
