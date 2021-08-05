@@ -40,7 +40,7 @@
           createChart1(data);
 
         } catch (error) {
-          console.log('Error: ', error);
+
         }
       }
       loadGraph1();
@@ -48,7 +48,8 @@
       function createChart1(data) {
         Highcharts.chart('buffer-length-graph-container', {
           chart: {
-            type: 'spline'
+            zoomType: 'x',
+            type: 'spline',
           },
           title: {
             text: 'DASH'
@@ -57,19 +58,14 @@
             text: 'Buffer Level, Dropped FPS, Bitrate (kbps)'
           },
           time: {
-            useUTC: false
+            useUTC: true
           },
 
           xAxis: {
-            type: 'datetime',
-            dateTimeLabelFormats: {
-              second: '%H:%M:%S',
-              day: '%e. %b',
-            },
             tickPixelInterval: 150,
             crosshair: true,
             title: {
-              text: 'Date'
+              text: 'Time (in seconds)'
             }
           },
           yAxis: [
@@ -124,10 +120,16 @@
           ],
           tooltip: {
             shared: true,
-            headerFormat: '<b>{series.name}</b><br>',
+            headerFormat: '<b>DASH</b><br>',
           },
 
           plotOptions: {
+            lineWidth: 4,
+            states: {
+              hover: {
+                lineWidth: 5
+              }
+            },
             series: {
               marker: {
                 enabled: true

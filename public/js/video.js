@@ -3,7 +3,7 @@ var videoId;
 var timeElapsed = 0;
 var videoStats = [];
 var audioStats = [];
-var url = 'https://dash.akamaized.net/dash264/TestCases/1a/sony/SNE_DASH_SD_CASE1A_REVISED.mpd';
+var url = '';
 
 function init() {
   var videoElement = document.querySelector('.videoContainer video');
@@ -245,11 +245,11 @@ async function saveStats(videoData, audioData) {
 
   try {
 
-    if( videoData !== '' ){
+    if( videoData != '' ){
       await ajaxService(url, videoData, 'POST');
     }
 
-    if( audioData !== '' ){
+    if( audioData != '' ){
       await ajaxService(url, audioData, 'POST');
     }
 

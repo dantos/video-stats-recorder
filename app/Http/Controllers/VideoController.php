@@ -61,18 +61,18 @@ class VideoController extends Controller
 			];
 
 			$type = $request->has('type') ? $request->type : 'video';
-			$columns[$graph][] = 'created_at';
-			$stats = $video->stats()->select($columns[$graph])->where('type', $type)->oldest()->get();
+			$columns[$graph][] = 'time';
+			$stats = $video->stats()->select($columns[$graph])->where('type', $type)->oldest('time')->get();
 
 			$graphData = [
 				$columns[$graph][0] => $stats->map(function ($item) use ($graph, $columns){
-					return [Carbon::parse($item->created_at)->format('Y-m-d H:i:s'), (int)$item->{$columns[$graph][0]}];
+					return [number_format($item->time), (float)($item->{$columns[$graph][0]})];
 				}),
 				$columns[$graph][1] => $stats->map(function ($item) use ($graph, $columns){
-					return [Carbon::parse($item->created_at)->format('Y-m-d H:i:s'), (int)$item->{$columns[$graph][1]}];
+					return [number_format($item->time), (float)($item->{$columns[$graph][1]})];
 				}),
 				$columns[$graph][2] => $stats->map(function ($item) use ($graph, $columns){
-					return [Carbon::parse($item->created_at)->format('Y-m-d H:i:s'), (int)$item->{$columns[$graph][2]}];
+					return [number_format($item->time), (float)($item->{$columns[$graph][2]})];
 				}),
 			];
 
