@@ -27,7 +27,7 @@ Route::get('/dashboard', function () {
 		return Redirect::route('home');
 	}
 
-	$videos = Video::all();
+	$videos = Video::whereHas('stats')->get()->all();
     return view('dashboard', compact('videos'));
 
 })->middleware('auth')->name('dashboard');

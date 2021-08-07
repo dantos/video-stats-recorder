@@ -41,7 +41,7 @@ class VideoController extends Controller
 
 		try {
 
-			$graph = empty($request->graph) ? 0 : $request->graph;
+			$graph = empty($request->data['graph']) ? 0 : $request->data['graph'];
 			$columns = [
 				[
 					'buffer_length',
@@ -60,7 +60,7 @@ class VideoController extends Controller
 				]
 			];
 
-			$type = $request->has('type') ? $request->type : 'video';
+			$type = empty($request->data['type']) ? 'video' : $request->data['type'];
 			$columns[$graph][] = 'time';
 			$stats = $video->stats()->select($columns[$graph])->where('type', $type)->oldest('time')->get();
 
