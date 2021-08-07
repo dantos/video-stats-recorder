@@ -81,25 +81,27 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/dash.all.min.js') }}"></script>
-    <script src="{{ asset('js/ControlBar.js') }}"></script>
-    <script src="{{ asset('js/video.js') }}"></script>
-    <script>
+    @push('scripts')
+        <script src="{{ asset('js/dash.all.min.js') }}"></script>
+        <script src="{{ asset('js/ControlBar.js') }}"></script>
+        <script src="{{ asset('js/video.js') }}"></script>
+        <script>
 
-      $(document).ready(function() {
-        $('.video-selector').select2();
+          $(document).ready(function() {
+            $('.video-selector').select2();
 
-        $('#loadButton').click(function (){
-          videoId = $('.video-selector').select2().find(":selected").data('id');
-          url = $('.video-selector').select2('data')[0].id;
-          stopVideo();
-          init();
-        });
+            $('#loadButton').click(function (){
+              videoId = $('.video-selector').select2().find(":selected").data('id');
+              url = $('.video-selector').select2('data')[0].id;
+              stopVideo();
+              init();
+            });
 
-        $('#stopButton').click(function (){
-          stopVideo();
-        });
+            $('#stopButton').click(function (){
+              stopVideo();
+            });
 
-      });
-    </script>
+          });
+        </script>
+    @endpush
 </x-app-layout>
