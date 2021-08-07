@@ -27,6 +27,8 @@
                         </div>
                     </div>
                     <div id="buffer-length-graph-container"></div>
+                    <div id="index-download-graph-container"></div>
+                    <div id="latency-graph-container"></div>
                 </div>
             </div>
         </div>
@@ -143,25 +145,25 @@
         });
       }
       async function loadGraphs(videoId, type) {
-        const url = 'video/'+videoId+'/stats?graph=0';
+        const url = 'video/'+videoId+'/stats';
 
         try {
 
-          let chart1Data = await ajaxService(url, {"graph" : 0, "type": type}, 'GET');
-          createChart1(chart1Data);
+          let bufferData = await ajaxService(url, {"graph" : 0, "type": type}, 'GET');
+          createBufferChart(bufferData);
 
-          // let chart2Data = await ajaxService(url, {"graph" : 1, "type": type}, 'GET');
-          // createChart2(chart1Data);
-          //
-          // let chart3Data = await ajaxService(url, {"graph" : 2, "type": type}, 'GET');
-          // createChart3(chart1Data);
+          let indexData = await ajaxService(url, {"graph" : 1, "type": type}, 'GET');
+          createIndexChart(indexData);
+
+          let latencyData = await ajaxService(url, {"graph" : 2, "type": type}, 'GET');
+          createLatencyChart(latencyData);
 
         } catch (error) {
 
         }
       }
 
-      function createChart1(data) {
+      function createBufferChart(data) {
         Highcharts.chart('buffer-length-graph-container', {
           chart: {
             zoomType: 'x',
@@ -277,6 +279,319 @@
               name: "Buffer Length",
               data: data.buffer_length
             }],
+          responsive: {
+            rules: [{
+              condition: {
+                maxWidth: 500
+              },
+              chartOptions: {
+                legend: {
+                  floating: false,
+                  layout: 'horizontal',
+                  align: 'center',
+                  verticalAlign: 'bottom',
+                  x: 0,
+                  y: 0
+                },
+                yAxis: [{
+                  labels: {
+                    align: 'right',
+                    x: 0,
+                    y: -6
+                  },
+                  showLastLabel: false
+                }, {
+                  labels: {
+                    align: 'left',
+                    x: 0,
+                    y: -6
+                  },
+                  showLastLabel: false
+                }, {
+                  visible: false
+                }]
+              }
+            }]
+          }
+        });
+      }
+
+      function createIndexChart(data) {
+        Highcharts.chart('index-download-graph-container', {
+          chart: {
+            zoomType: 'x',
+            type: 'spline',
+          },
+          title: {
+            text: 'DASH'
+          },
+          subtitle: {
+            text: 'Video Pending Index, Video Current Quality, Video Dropped FPS'
+          },
+          time: {
+            useUTC: true
+          },
+
+          xAxis: {
+            tickPixelInterval: 150,
+            crosshair: true,
+            title: {
+              text: 'Time (in seconds)'
+            }
+          },
+          yAxis: [
+            {
+              opposite: true,
+              gridLineWidth: 0,
+              title: {
+                text: 'Video Pending Index',
+                style: {
+                  color: '#44c248'
+                }
+              },
+              min: 0,
+              plotLines: [{
+                value: 1,
+                width: 1,
+                color: '#808080'
+              }]
+            },
+            {
+              gridLineWidth: 0,
+              title: {
+                text: 'Video Current Quality',
+                style: {
+                  color: '#326e88'
+                }
+              },
+              min: 0,
+              plotLines: [{
+                value: 1,
+                width: 1,
+                color: '#808080'
+              }]
+            },
+            {
+              opposite: true,
+              gridLineWidth: 0,
+              title: {
+                text: 'Video Dropped FPS',
+                style: {
+                  color: '#65080c'
+                }
+              },
+              min: 0,
+              plotLines: [{
+                value: 1,
+                width: 1,
+                color: '#808080'
+              }]
+            },
+
+          ],
+          tooltip: {
+            shared: true,
+            headerFormat: '<b>DASH</b><br>',
+          },
+
+          plotOptions: {
+            lineWidth: 4,
+            states: {
+              hover: {
+                lineWidth: 5
+              }
+            },
+            series: {
+              marker: {
+                enabled: true
+              }
+            }
+          },
+
+          colors: ['#44c248', '#326e88', '#65080c',],
+
+          series: [
+            {
+              type: 'spline',
+              yAxis: 0,
+              name: "Video Pending Index",
+              data: data.index_downloading
+            },
+            {
+              type: 'spline',
+              yAxis: 1,
+              name: "Index Playing",
+              data: data.index_playing,
+              dashStyle: 'ShortDash',
+            },
+            {
+              type: 'spline',
+              yAxis: 2,
+              name: "Dropped Frames",
+              data: data.bufferLengthValue,
+              marker: {
+                enabled: false
+              },
+              dashStyle: 'Dot',
+            },
+          ],
+          responsive: {
+            rules: [{
+              condition: {
+                maxWidth: 500
+              },
+              chartOptions: {
+                legend: {
+                  floating: false,
+                  layout: 'horizontal',
+                  align: 'center',
+                  verticalAlign: 'bottom',
+                  x: 0,
+                  y: 0
+                },
+                yAxis: [{
+                  labels: {
+                    align: 'right',
+                    x: 0,
+                    y: -6
+                  },
+                  showLastLabel: false
+                }, {
+                  labels: {
+                    align: 'left',
+                    x: 0,
+                    y: -6
+                  },
+                  showLastLabel: false
+                }, {
+                  visible: false
+                }]
+              }
+            }]
+          }
+        });
+      }
+
+      function createLatencyChart(data) {
+        Highcharts.chart('latency-graph-container', {
+          chart: {
+            zoomType: 'x',
+            type: 'spline',
+          },
+          title: {
+            text: 'DASH'
+          },
+          subtitle: {
+            text: 'Video Latency (ms), Video Download Rate (Mbps), Video Ratio'
+          },
+          time: {
+            useUTC: true
+          },
+
+          xAxis: {
+            tickPixelInterval: 150,
+            crosshair: true,
+            title: {
+              text: 'Time (in seconds)'
+            }
+          },
+          yAxis: [
+            {
+              opposite: true,
+              gridLineWidth: 0,
+              title: {
+                text: 'Video Latency (ms)',
+                style: {
+                  color: '#329d61'
+                }
+              },
+              min: 0,
+              plotLines: [{
+                value: 1,
+                width: 1,
+                color: '#808080'
+              }]
+            },
+            {
+              gridLineWidth: 0,
+              title: {
+                text: 'Video Download Rate (Mbps)',
+                style: {
+                  color: '#FF6700'
+                }
+              },
+              min: 0,
+              plotLines: [{
+                value: 1,
+                width: 1,
+                color: '#808080'
+              }]
+            },
+            {
+              opposite: true,
+              gridLineWidth: 0,
+              title: {
+                text: 'Video Ratio',
+                style: {
+                  color: '#00CCBE'
+                }
+              },
+              min: 0,
+              plotLines: [{
+                value: 1,
+                width: 1,
+                color: '#808080'
+              }]
+            },
+
+          ],
+          tooltip: {
+            shared: true,
+            headerFormat: '<b>DASH</b><br>',
+          },
+
+          plotOptions: {
+            lineWidth: 4,
+            states: {
+              hover: {
+                lineWidth: 5
+              }
+            },
+            series: {
+              marker: {
+                enabled: true
+              }
+            }
+          },
+
+          colors: ['#329d61', '#FF6700', '#00CCBE',],
+
+          series: [
+            {
+              type: 'spline',
+              yAxis: 0,
+              name: "Latency",
+              data: data.latency,
+              dashStyle: 'ShortDash',
+            },
+            {
+              type: 'spline',
+              yAxis: 1,
+              name: "Download",
+              data: data.download,
+              dashStyle: 'ShortDot',
+            },
+            {
+              type: 'spline',
+              yAxis: 2,
+              name: "Ratio",
+              data: data.ratio,
+              marker: {
+                enabled: false
+              },
+              dashStyle: 'Solid',
+            },
+          ],
           responsive: {
             rules: [{
               condition: {
