@@ -192,6 +192,7 @@
       async function loadGraphs(videoId, type) {
         let url = 'video/'+videoId+'/stats';
         let userId = $('.user-selector').select2('data')[0].id;
+        $("#rating-container").hide('slow');
 
         if( userId != '' ){
           url = url + '/'+ userId
