@@ -10,6 +10,14 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex flex-col m-auto mb-4 space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4">
                         <div class="select-wrapper">
+                            <select class="user-selector">
+                                <option value=""></option>
+                                @foreach($users as $index => $name)
+                                    <option value="{{$index}}">{{$name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="select-wrapper">
                             <select class="video-selector">
                                 <option value=""></option>
                                 @foreach($videos as $video)
@@ -72,8 +80,15 @@
             }
         </style>
         <style>
-            /* CHECKBOX TOGGLE SWITCH */
-            /* @apply rules for documentation, these do not work as inline style */
+            #buffer-length-graph-container, #index-download-graph-container, #latency-graph-container {
+                border-top: 1px solid #1f29371c;
+                margin-bottom: 20px;
+                padding-top: 14px;
+            }
+
+            .select2-container {
+                min-width: 200px;
+            }
             .toggle-checkbox:checked {
                 @apply: right-0 border-green-400;
                 right: 0;
@@ -104,6 +119,11 @@
           placeholder: "Please select a video...",
         });
 
+        $('.user-selector').select2({
+          placeholder: "Please select a user...",
+          allowClear: true,
+        });
+
         $('.video-selector').on('select2:select', function (e) {
           let videoId = e.params.data.id;
           let graphType = $('#type-toggle').is(':checked') ? 'audio' : 'video';
@@ -113,15 +133,27 @@
           }
         });
 
-        $('#type-toggle').change(function() {
-          let videoId = $('.video-selector').select2('data')[0].id;
-          let graphType = this.checked ? 'audio' : 'video';
+        $('.user-selector').on('select2:select', function (e) {
+          refreshGraphsAfterSelectionChanged();
+        });
 
-          if( videoId != '' ){
-            loadGraphs(videoId, graphType);
-          }
+        $('.user-selector').on('select2:unselecting', function (e) {
+          refreshGraphsAfterSelectionChanged();
+        });
+
+        $('#type-toggle').change(function() {
+          refreshGraphsAfterSelectionChanged();
         });
       });
+
+      function refreshGraphsAfterSelectionChanged() {
+        let videoId = $('.video-selector').select2('data')[0].id;
+        let graphType = $('#type-toggle').is(':checked') ? 'audio' : 'video';
+
+        if( videoId != '' ){
+          loadGraphs(videoId, graphType);
+        }
+      }
 
 
       async function ajaxService(url, params, method) {
@@ -131,10 +163,12 @@
           },
           beforeSend: function (){
             $('.video-selector').prop('disabled', true);
+            $('.user-selector').prop('disabled', true);
             $('#type-toggle').prop('disabled', true)
           },
           success: function (){
             $('.video-selector').prop('disabled', false);
+            $('.user-selector').prop('disabled', false);
             $('#type-toggle').prop('disabled', false)
 
           },
@@ -145,7 +179,12 @@
         });
       }
       async function loadGraphs(videoId, type) {
-        const url = 'video/'+videoId+'/stats';
+        let url = 'video/'+videoId+'/stats';
+        let userId = $('.user-selector').select2('data')[0].id;
+
+        if( userId != '' ){
+          url = url + '/'+ userId
+        }
 
         try {
 

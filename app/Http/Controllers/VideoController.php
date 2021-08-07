@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rating;
+use App\Models\User;
 use App\Models\Video;
 use App\Models\VideoStat;
 use Carbon\Carbon;
@@ -59,7 +60,7 @@ class VideoController extends Controller
 		}
 	}
 
-	public function getVideoStats( Request $request, Video $video ) {
+	public function getVideoStats( Request $request, Video $video, User $user = NULL) {
 
 		$graphData = [];
 
@@ -86,7 +87,13 @@ class VideoController extends Controller
 
 			$type = empty($request->data['type']) ? 'video' : $request->data['type'];
 			$columns[$graph][] = 'time';
-			$stats = $video->stats()->select($columns[$graph])->where('type', $type)->oldest('time')->get();
+			$stats = $video->stats()->select($columns[$graph])->where('type', $type);
+
+			if( !is_null($user) ){
+				$stats->where('user_id', $user->id);
+			}
+
+			$stats = $stats->oldest('time')->get();
 
 			$graphData = [
 				$columns[$graph][0] => $stats->map(function ($item) use ($graph, $columns){

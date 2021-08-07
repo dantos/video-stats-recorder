@@ -1,6 +1,7 @@
 <?php
 
 	use App\Http\Controllers\VideoController;
+	use App\Models\User;
 	use App\Models\Video;
 	use Illuminate\Support\Facades\Redirect;
 	use Illuminate\Support\Facades\Route;
@@ -28,12 +29,14 @@ Route::get('/dashboard', function () {
 	}
 
 	$videos = Video::whereHas('stats')->get()->all();
-    return view('dashboard', compact('videos'));
+	$users = User::whereHas('videoStats')->get()->pluck('name', 'id');
+
+    return view('dashboard', compact('videos', 'users'));
 
 })->middleware('auth')->name('dashboard');
 
 Route::post('video/{video}/stats', [VideoController::class, 'storeVideoStats'])->name('video.stats');
-Route::get('video/{video}/stats', [VideoController::class, 'getVideoStats'])->name('video.stats');
+Route::get('video/{video}/stats/{user?}', [VideoController::class, 'getVideoStats'])->name('video.stats');
 Route::post('video/{video}/rate', [VideoController::class, 'setVideoRating'])->name('video.rate');
 
 
