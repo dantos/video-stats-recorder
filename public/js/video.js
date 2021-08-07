@@ -268,8 +268,8 @@ function showRateVideoDialog() {
       title: 'How do you rate this video?',
       icon: 'warning',
       html:
-        'How good was it from 1 to 10 <br/><br/>' +
-        '<input type="number" id="rater" min="0" max="10" value="0">',
+        'How good was it from 1 to 5 <br/><br/>' +
+        '<input type="number" id="rater" min="0" max="5" value="0">',
       showCancelButton: true,
       confirmButtonColor: '#428bca',
       cancelButtonColor: '#fa6b6b',

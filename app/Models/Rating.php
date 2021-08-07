@@ -13,4 +13,9 @@ class Rating extends Model
 
 	protected $guarded = ['id'];
 
+	public function scopeGetByUserAndVideo( $query, $userId, $videoId ) {
+		$query->where('user_id', $userId)
+		      ->where('video_id', $videoId);
+	}
+
 }

@@ -107,6 +107,11 @@ class VideoController extends Controller
 				}),
 			];
 
+			if( !is_null($user) && $graph == 0){
+				$score = Rating::getByUserAndVideo($user->id, $video->id)->first()->score;
+				$graphData['score'] = $score;
+			}
+
 		} catch (\Exception $e) {
 		    Log::error('Location: VideoController storeVideoStats Line: ' . $e->getLine(). ' - Message ' . $e->getMessage());
 		}
