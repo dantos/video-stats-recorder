@@ -9,7 +9,11 @@ class Video extends Model
 {
     use HasFactory;
 
-	public function stats() {
+	public function stats(): \Illuminate\Database\Eloquent\Relations\HasMany {
 		return $this->hasMany(VideoStat::class);
+    }
+
+	public function ratings(): \Illuminate\Database\Eloquent\Relations\HasMany {
+		return $this->hasMany(Rating::class);
     }
 }

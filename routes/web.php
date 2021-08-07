@@ -34,6 +34,7 @@ Route::get('/dashboard', function () {
 
 Route::post('video/{video}/stats', [VideoController::class, 'storeVideoStats'])->name('video.stats');
 Route::get('video/{video}/stats', [VideoController::class, 'getVideoStats'])->name('video.stats');
+Route::post('video/{video}/rate', [VideoController::class, 'setVideoRating'])->name('video.rate');
 
 
 require __DIR__.'/auth.php';

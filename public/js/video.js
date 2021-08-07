@@ -1,6 +1,8 @@
 var player;
 var videoId;
 var timeElapsed = 0;
+var timeElapsedCollection = [];
+var videoWasRated = false;
 var videoStats = [];
 var audioStats = [];
 var url = '';
@@ -23,25 +25,29 @@ function setListeners() {
 
 init();
 
-
 function stopVideo() {
   player.reset();
   player.destroy();
+  timeElapsedCollection = [];
+}
+
+function pauseVideo() {
+  $("#playPauseBtn").click();
 }
 
 function onVideoEnd() {
   clearData();
   timeElapsed = 0;
-  //pause video
-  //showModal if not showed before
+  showRateVideoDialog();
 }
 
 function onVideoPaused() {
-
-  //show modal if more than 15 secs
   saveStats(videoStats, audioStats);
   clearData();
-
+  if( Object.keys(timeElapsedCollection).length > 10 ){
+    showRateVideoDialog();
+    timeElapsedCollection = [];
+  }
 }
 
 function clearData() {
@@ -57,11 +63,7 @@ function startStatsTracking(e){
 function getDashData(event, type) {
 
   timeElapsed = Math.floor(event.time);
-
-  if( timeElapsed > 10 ){
-    //pause video
-    //show modal
-  }
+  timeElapsedCollection[timeElapsed] = timeElapsed;
 
   if( timeElapsed >= 5 && timeElapsed % 5 == 0){
     saveStats(videoStats, audioStats);
@@ -255,5 +257,47 @@ async function saveStats(videoData, audioData) {
 
   } catch (error) {
 
+  }
+}
+
+function showRateVideoDialog() {
+
+  if( !videoWasRated ) {
+
+    Swal.fire({
+      title: 'How do you rate this video?',
+      icon: 'warning',
+      html:
+        'How good was it from 1 to 10 <br/><br/>' +
+        '<input type="number" id="rater" min="0" max="10" value="0">',
+      showCancelButton: true,
+      confirmButtonColor: '#428bca',
+      cancelButtonColor: '#fa6b6b',
+      cancelButtonText: 'Later...',
+      confirmButtonText: 'Rate',
+      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          success: function () {
+            $("#rater").val(0);
+            videoWasRated = true;
+            Swal.fire(
+              'Rated!',
+              'Your rating has been sent.',
+              'success'
+            )
+          },
+          url: 'video/' + videoId + '/rate',
+          type: 'POST',
+          dataType: 'json',
+          data: {data: {"score": $("#rater").val()}}
+        });
+      }
+      timeElapsedCollection = [];
+    });
   }
 }

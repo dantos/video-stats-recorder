@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rating;
 use App\Models\Video;
 use App\Models\VideoStat;
 use Carbon\Carbon;
@@ -32,6 +33,29 @@ class VideoController extends Controller
 
 		} catch (\Exception $e) {
 		    Log::error('Location: VideoController storeVideoStats Line: ' . $e->getLine(). ' - Message ' . $e->getMessage());
+		}
+	}
+
+	public function setVideoRating( Request $request, Video $video ) {
+
+		try {
+
+			$userId = Auth::check() ? Auth::user()->id : 2;
+			$score = empty($request->data['score']) ? 0 : $request->data['score'];
+
+			$rating = Rating::firstOrCreate([
+				'user_id' => $userId,
+				'video_id' => $video->id,
+			]);
+
+			$rating->score = $score;
+			$rating->save();
+
+			return response()->json(['success' => 'success'], 200);
+
+		} catch (\Exception $e) {
+			return response()->json(['error' => 'error'], 500);
+			Log::error('Location: VideoController setVideoRating Line: ' . $e->getLine(). ' - Message ' . $e->getMessage());
 		}
 	}
 
