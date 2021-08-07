@@ -29,6 +29,7 @@ function stopVideo() {
   player.reset();
   player.destroy();
   timeElapsedCollection = [];
+  videoWasRated = false;
 }
 
 function pauseVideo() {
