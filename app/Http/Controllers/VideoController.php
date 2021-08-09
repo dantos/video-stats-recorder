@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Video;
 use App\Models\VideoStat;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -17,10 +18,15 @@ class VideoController extends Controller
 
 		try {
 
+			$user = Auth::check() ? Auth::user() : User::where('role', 'guest')->first();
+			if( empty($user) ){
+				throw new Exception('No guest user found.');
+			}
+
 			$stats = collect($request->data)
 				->filter()
-				->transform(function ($item) use ($video) {
-					$item['user_id'] = Auth::check() ? Auth::user()->id : 2;
+				->transform(function ($item) use ($video, $user) {
+					$item['user_id'] = $user->id;
 					$item['video_id'] = $video->id;
 					$item['created_at'] = date('Y-m-d H:i:s');
 					$item['updated_at'] = date('Y-m-d H:i:s');
@@ -41,11 +47,15 @@ class VideoController extends Controller
 
 		try {
 
-			$userId = Auth::check() ? Auth::user()->id : 2;
+			$user = Auth::check() ? Auth::user() : User::where('role', 'guest')->first();
+			if( empty($user) ){
+				throw new Exception('No guest user found.');
+			}
+
 			$score = empty($request->data['score']) ? 0 : $request->data['score'];
 
 			$rating = Rating::firstOrCreate([
-				'user_id' => $userId,
+				'user_id' => $user->id,
 				'video_id' => $video->id,
 			]);
 
