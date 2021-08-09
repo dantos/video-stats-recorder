@@ -20,6 +20,9 @@
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 {{ __('Dashboard') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index') || request()->routeIs('users.create') || request()->routeIs('users.edit')">
+                                {{ __('Users') }}
+                            </x-nav-link>
                         @endif
                     @endif
                 </div>
@@ -58,6 +61,13 @@
 
                                 <x-dropdown-link :href="route('login')">
                                     {{ __('Log In') }}
+                                </x-dropdown-link>
+                            </form>
+                            <form method="POST" action="{{ route('login') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('register')">
+                                    {{ __('Register') }}
                                 </x-dropdown-link>
                             </form>
                         @endif

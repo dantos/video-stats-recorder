@@ -31,7 +31,7 @@ class CreateAdminAccountTableSeeder extends Seeder
 		    'email' => 'guest@videostats.com',
 		    'email_verified_at' => now(),
 		    'password' => \Hash::make('guest@stats2021'),
-		    'role' => 'admin',
+		    'role' => 'guest',
 		    'remember_token' => Str::random(10),
 	    ]);
     }

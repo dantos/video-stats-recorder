@@ -1,8 +1,10 @@
 <?php
 
+	use App\Http\Controllers\UserController;
 	use App\Http\Controllers\VideoController;
 	use App\Models\User;
 	use App\Models\Video;
+	use Illuminate\Support\Facades\Auth;
 	use Illuminate\Support\Facades\Redirect;
 	use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,6 @@ Route::get('/dashboard', function () {
 Route::post('video/{video}/stats', [VideoController::class, 'storeVideoStats'])->name('video.stats');
 Route::get('video/{video}/stats/{user?}', [VideoController::class, 'getVideoStats'])->name('video.stats');
 Route::post('video/{video}/rate', [VideoController::class, 'setVideoRating'])->name('video.rate');
-
+Route::resource('users', UserController::class)->middleware('auth');
 
 require __DIR__.'/auth.php';
