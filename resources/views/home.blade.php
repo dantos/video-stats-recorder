@@ -17,24 +17,8 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="p-2 md:w-40 ">
-                                <a href="#" id="stopButton" class="flex items-center p-2 bg-red-200 rounded-lg shadow-xs cursor-pointer hover:bg-blue-500 hover:text-gray-100">
-                                    <div>
-                                        <p class=" text-xs font-medium ml-2 ">
-                                            Stop
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="p-2 md:w-40 ">
-                                <a href="#" id="loadButton" class="flex items-center p-2 bg-blue-200 rounded-lg shadow-xs cursor-pointer hover:bg-blue-500 hover:text-gray-100">
-                                    <div>
-                                        <p class=" text-xs font-medium ml-2 ">
-                                            Load
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
+                            <div id="stopButton" class="py-2 px-4 mt-8 bg-red-400 text-white rounded-md shadow-xl cursor-pointer hover:bg-red-500 hover:text-gray-100">Stop</div>
+                            <div id="loadButton" class="py-2 px-4 mt-8 bg-indigo-400 text-white rounded-md shadow-xl cursor-pointer hover:bg-indigo-500 hover:text-gray-100">Load</div>
                         </div>
                     </div>
                     <div class="flex">
@@ -81,6 +65,14 @@
             </div>
         </div>
     </div>
+    @push('styles')
+        <style>
+            .select2-container {
+                min-width: 200px;
+                max-width: 800px;
+            }
+        </style>
+    @endpush
     @push('scripts')
         <script src="{{ asset('js/dash.all.min.js') }}"></script>
         <script src="{{ asset('js/ControlBar.js') }}"></script>

@@ -99,6 +99,7 @@
 
             .select2-container {
                 min-width: 200px;
+                max-width: 800px;
             }
             .toggle-checkbox:checked {
                 @apply: right-0 border-green-400;
