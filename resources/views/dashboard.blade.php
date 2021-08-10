@@ -193,7 +193,6 @@
       async function loadGraphs(videoId, type) {
         let url = 'video/'+videoId+'/stats';
         let userId = $('.user-selector').select2('data')[0].id;
-        $("#rating-container").hide('slow');
 
         if( userId != '' ){
           url = url + '/'+ userId
@@ -203,9 +202,7 @@
 
           let bufferData = await ajaxService(url, {"graph" : 0, "type": type}, 'GET');
           createBufferChart(bufferData);
-          if( userId != '' ){
-            drawRating(bufferData['score'])
-          }
+          drawRating(bufferData['score']);
 
           let indexData = await ajaxService(url, {"graph" : 1, "type": type}, 'GET');
           createIndexChart(indexData);
@@ -219,6 +216,8 @@
       }
 
       function drawRating(score) {
+
+        $("#rating-container").hide();
 
         let stars = ``;
         let qty = parseInt(score);

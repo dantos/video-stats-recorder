@@ -117,8 +117,18 @@ class VideoController extends Controller
 				}),
 			];
 
-			if( !is_null($user) && $graph == 0){
-				$score = Rating::getByUserAndVideo($user->id, $video->id)->first()->score;
+			if( $graph == 0){
+				$score = 0;
+
+				if( !is_null($user)  ){
+					$rating = Rating::getByUserAndVideo($user->id, $video->id)->first();
+					$score = empty($rating) ? $score : $rating->score;
+
+				} else {
+					$ratings = Rating::select('score')->where('video_id', $video->id)->get();
+					$score = empty($ratings) ? $score : (int)round($ratings->avg('score'));
+				}
+
 				$graphData['score'] = $score;
 			}
 
