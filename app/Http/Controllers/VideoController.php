@@ -10,7 +10,11 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class VideoController extends Controller
 {
@@ -137,5 +141,104 @@ class VideoController extends Controller
 		}
 
 		return $graphData;
+	}
+
+	public function index() {
+		$videos = Video::orderByDesc('created_at')->get();
+		return view('video.index', compact('videos'));
+	}
+
+	public function create() {
+		return view('video.create');
+	}
+
+	/**
+	 * Handle an incoming registration request.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 *
+	 * @throws \Illuminate\Validation\ValidationException
+	 */
+	public function store(Request $request)
+	{
+		$request->validate([
+			'name' => 'required|string|max:255',
+			'provider' => 'required',
+			'url' => 'required|url',
+		]);
+
+		//Gets video extension from url and check if is mpd
+		if( last(explode('.', last(explode('/', $request->url)))) != 'mpd') {
+			throw ValidationException::withMessages(['url' => ['Your video extension is invalid']]);
+		}
+
+		try {
+
+			Video::create([
+				'name' => $request->name,
+				'provider' => $request->provider,
+				'url' => $request->url,
+			]);
+
+		} catch (\Exception $e) {
+			Log::error('Location: VideoController store Line: ' . $e->getLine(). ' - Message ' . $e->getMessage());
+		}
+
+		return Redirect::route('videos.index');
+	}
+
+	public function edit(Video $video) {
+		return view('video.edit', compact('video'));
+	}
+
+	/**
+	 * Handle an incoming registration request.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 *
+	 * @throws \Illuminate\Validation\ValidationException
+	 */
+	public function update(Request $request, Video $video)
+	{
+
+		$request->validate([
+			'name' => 'required|string|max:255',
+			'provider' => 'required',
+			'url' => 'required|url',
+		]);
+
+		//Gets video extension from url and check if is mpd
+		if( last(explode('.', last(explode('/', $request->url)))) != 'mpd') {
+			throw ValidationException::withMessages(['url' => ['Your video extension is invalid']]);
+		}
+
+		try {
+
+			$video->name = $request->name;
+			$video->provider = $request->provider;
+			$video->url = $request->url;
+
+			$video->save();
+
+		} catch (\Exception $e) {
+			Log::error('Location: VideoController update Line: ' . $e->getLine(). ' - Message ' . $e->getMessage());
+		}
+
+		return Redirect::route('videos.index');
+	}
+
+	public function destroy(Video $video){
+
+		try {
+
+			$video->forceDelete();
+
+		} catch (\Exception $e) {
+			Log::error('Location: VideoController destroy Line: ' . $e->getLine(). ' - Message ' . $e->getMessage());
+		}
+
+		return Redirect::route('videos.index');
 	}
 }

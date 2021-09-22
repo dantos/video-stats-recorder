@@ -9,6 +9,8 @@ class Video extends Model
 {
     use HasFactory;
 
+	protected $guarded = ['id'];
+
 	public function stats(): \Illuminate\Database\Eloquent\Relations\HasMany {
 		return $this->hasMany(VideoStat::class);
     }

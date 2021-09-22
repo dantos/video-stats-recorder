@@ -37,9 +37,10 @@ Route::get('/dashboard', function () {
 
 })->middleware('auth')->name('dashboard');
 
-Route::post('video/{video}/stats', [VideoController::class, 'storeVideoStats'])->name('video.stats');
-Route::get('video/{video}/stats/{user?}', [VideoController::class, 'getVideoStats'])->name('video.stats');
+Route::post('video/{video}/stats', [VideoController::class, 'storeVideoStats'])->name('video.stats.store');
+Route::get('video/{video}/stats/{user?}', [VideoController::class, 'getVideoStats'])->name('video.stats.get');
 Route::post('video/{video}/rate', [VideoController::class, 'setVideoRating'])->name('video.rate');
 Route::resource('users', UserController::class)->middleware('auth');
+Route::resource('videos', VideoController::class)->middleware('auth');
 
 require __DIR__.'/auth.php';

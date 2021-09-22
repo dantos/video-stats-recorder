@@ -23,6 +23,9 @@
                             <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index') || request()->routeIs('users.create') || request()->routeIs('users.edit')">
                                 {{ __('Users') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('videos.index')" :active="request()->routeIs('videos.index') || request()->routeIs('videos.create') || request()->routeIs('videos.edit')">
+                                {{ __('Videos') }}
+                            </x-nav-link>
                         @endif
                     @endif
                 </div>
