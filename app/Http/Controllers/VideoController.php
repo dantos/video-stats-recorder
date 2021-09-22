@@ -6,14 +6,11 @@ use App\Models\Rating;
 use App\Models\User;
 use App\Models\Video;
 use App\Models\VideoStat;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class VideoController extends Controller
@@ -56,7 +53,7 @@ class VideoController extends Controller
 				throw new Exception('No guest user found.');
 			}
 
-			$score = empty($request->data['score']) ? 0 : $request->data['score'];
+			$score = empty($request->data['score']) || $request->data['score'] < 0  ? 0 : $request->data['score'];
 
 			$rating = Rating::firstOrCreate([
 				'user_id' => $user->id,

@@ -76,6 +76,7 @@
                 min-width: 640px;
             }
             .video-loader-controller { margin-bottom: 20px; }
+            .rating-star{ cursor: pointer; }
         </style>
     @endpush
     @push('scripts')
