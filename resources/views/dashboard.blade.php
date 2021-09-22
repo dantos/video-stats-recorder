@@ -10,6 +10,9 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex flex-col m-auto mb-4 space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4">
                         <div class="select-wrapper">
+                            <input id="datetimepicker" type="text" placeholder="Please select a date..." class="date-time-selector rounded-md shadow-sm border-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        </div>
+                        <div class="select-wrapper">
                             <select class="user-selector">
                                 <option value=""></option>
                                 @foreach($users as $index => $name)
@@ -53,9 +56,8 @@
         </div>
     </div>
     @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/jquery.datetimepicker.min.css') }}">
         <style>
-
-
             .highcharts-figure, .highcharts-data-table table {
                 min-width: 310px;
                 max-width: 800px;
@@ -89,8 +91,7 @@
             .highcharts-data-table tr:hover {
                 background: #f1f7ff;
             }
-        </style>
-        <style>
+
             #buffer-length-graph-container, #index-download-graph-container, #latency-graph-container {
                 border-top: 1px solid #1f29371c;
                 margin-bottom: 20px;
@@ -115,9 +116,12 @@
                 background-color: wheat;
                 background-image: url("data:image/svg+xml,%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 122.88 96.65'%3E%3Ctitle%3Esound%3C/title%3E%3Cpath d='M11,22.84H36.47L58.17,1A3.44,3.44,0,0,1,63,1a3.39,3.39,0,0,1,1,2.44h0V93.2a3.46,3.46,0,0,1-5.93,2.41L36.65,77.49H11a11,11,0,0,1-11-11V33.83a11,11,0,0,1,11-11Zm65.12,15a3.22,3.22,0,1,1,6.1-2,43.3,43.3,0,0,1,1.56,13.27c-.09,4.76-.78,9.44-2.13,12.21a3.23,3.23,0,1,1-5.8-2.83c.93-1.92,1.43-5.59,1.5-9.48a37.13,37.13,0,0,0-1.23-11.12Zm16.64-12a3.23,3.23,0,0,1,6-2.48c3,7.18,4.61,16.23,4.75,25.22s-1.17,17.72-4,24.77a3.22,3.22,0,1,1-6-2.4C96,64.64,97.15,56.66,97,48.6s-1.58-16.36-4.28-22.81Zm16.09-10.23a3.22,3.22,0,1,1,5.8-2.8,86.65,86.65,0,0,1,8.24,36.44c.09,12.22-2.37,24.39-7.73,34.77a3.22,3.22,0,0,1-5.73-3c4.88-9.43,7.11-20.56,7-31.77a80,80,0,0,0-7.6-33.69ZM37.89,29.74H11A4.11,4.11,0,0,0,6.9,33.83V66.51A4.11,4.11,0,0,0,11,70.6h26.9s2,.69,2.21.83L57.16,85.8v-74L40.52,28.53a3.46,3.46,0,0,1-2.63,1.21Z'/%3E%3C/svg%3E");
             }
+            .video-selector + .select2 { max-width: 433px; }
+            .date-time-selector { height: 28px; }
         </style>
     @endpush
     @push('scripts')
+    <script src="{{ asset('js/jquery.datetimepicker.full.min.js') }}"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/series-label.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -156,6 +160,13 @@
         $('#type-toggle').change(function() {
           refreshGraphsAfterSelectionChanged();
         });
+
+        $('#datetimepicker').datetimepicker({
+          onChangeDateTime:function(dp,$input){
+            refreshGraphsAfterSelectionChanged();
+          }
+        });
+
       });
 
       function refreshGraphsAfterSelectionChanged() {
@@ -169,6 +180,12 @@
 
 
       async function ajaxService(url, params, method) {
+
+        let dateTime = $('#datetimepicker').val();
+        if( dateTime != '' ){
+          params.dateTime = dateTime;
+        }
+
         return await $.ajax( {
           headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -177,11 +194,13 @@
             $('.video-selector').prop('disabled', true);
             $('.user-selector').prop('disabled', true);
             $('#type-toggle').prop('disabled', true)
+            $('#datetimepicker').prop('disabled', true)
           },
           success: function (){
             $('.video-selector').prop('disabled', false);
             $('.user-selector').prop('disabled', false);
             $('#type-toggle').prop('disabled', false)
+            $('#datetimepicker').prop('disabled', false)
 
           },
           url: url,

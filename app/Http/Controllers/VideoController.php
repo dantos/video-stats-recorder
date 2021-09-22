@@ -6,6 +6,7 @@ use App\Models\Rating;
 use App\Models\User;
 use App\Models\Video;
 use App\Models\VideoStat;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,6 +100,11 @@ class VideoController extends Controller
 			$type = empty($request->data['type']) ? 'video' : $request->data['type'];
 			$columns[$graph][] = 'time';
 			$stats = $video->stats()->select($columns[$graph])->where('type', $type);
+
+			if( isset($request->data['dateTime']) ){
+				$dateTime = Carbon::parse($request->data['dateTime'])->format('Y-m-d H:i');
+				$stats->whereBetween('created_at', [$dateTime.':00', $dateTime.':59']);
+			}
 
 			if( !is_null($user) ){
 				$stats->where('user_id', $user->id);
