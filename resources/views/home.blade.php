@@ -9,7 +9,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex">
-                        <div class="flex flex-col m-auto space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4">
+                        <div class="video-loader-controller flex flex-col m-auto space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4">
                             <div class="select-wrapper">
                                 <select class="video-selector">
                                     @foreach($videos as $video)
@@ -24,13 +24,13 @@
                     <div class="flex">
                         <div class="dash-video-player m-auto">
                             <div class="videoContainer" id="videoContainer">
-                                <video preload="" autoplay=""></video>
-                                <div id="videoController" class="video-controller unselectable">
+                                <video class="m-auto" preload="" autoplay=""></video>
+                                <div id="videoController" class="video-controller unselectable m-auto">
                                     <div id="playPauseBtn" class="btn-play-pause" title="Play/Pause">
                                         <span id="iconPlayPause" class="icon-play"></span>
                                     </div>
                                     <span id="videoTime" class="time-display">00:00:00</span>
-                                    <div id="fullscreenBtn" class="btn-fullscreen control-icon-layout" title="Fullscreen">
+                                    <div id="fullscreenBtn" class="btn-fullscreen control-icon-layout hidden" title="Fullscreen">
                                         <span class="icon-fullscreen-enter"></span>
                                     </div>
                                     <div id="bitrateListBtn" class="control-icon-layout" title="Bitrate List">
@@ -71,6 +71,11 @@
                 min-width: 200px;
                 max-width: 800px;
             }
+            video, .video-controller {
+                width: 100%;
+                min-width: 640px;
+            }
+            .video-loader-controller { margin-bottom: 20px; }
         </style>
     @endpush
     @push('scripts')
