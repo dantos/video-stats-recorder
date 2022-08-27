@@ -148,6 +148,11 @@ video {
     position: absolute;
 }
 
+#bitrateMenu {
+    top: unset !important;
+    bottom: 46px;
+}
+
 #bitrateMenu .menu-sub-menu-title {
     min-width: 150px;
 }

@@ -68,6 +68,7 @@
     </div>
     @push('styles')
         <style>
+            .videoContainer { position: relative; }
             .select2-container {
                 min-width: 200px;
                 max-width: 800px;
