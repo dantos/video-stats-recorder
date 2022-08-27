@@ -57,7 +57,7 @@
         </div>
     </div>
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/jquery.datetimepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/flatpickr.min.css') }}">
         <style>
             .highcharts-figure, .highcharts-data-table table {
                 min-width: 310px;
@@ -122,7 +122,7 @@
         </style>
     @endpush
     @push('scripts')
-    <script src="{{ asset('js/jquery.datetimepicker.full.min.js') }}"></script>
+    <script src="{{ asset('js/flatpickr.js') }}"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/series-label.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -162,12 +162,17 @@
           refreshGraphsAfterSelectionChanged();
         });
 
-        $('#datetimepicker').datetimepicker({
-          onChangeDateTime:function(dp,$input){
+        $('#datetimepicker').flatpickr({
+          enableTime: true,
+          enableSeconds:true,
+          dateFormat: "Y/m/d H:i:s",
+          hourIncrement: 1,
+          minuteIncrement: 1,
+          time_24hr: true,
+          onChange: function (){
             refreshGraphsAfterSelectionChanged();
-          }
+          },
         });
-
       });
 
       function refreshGraphsAfterSelectionChanged() {

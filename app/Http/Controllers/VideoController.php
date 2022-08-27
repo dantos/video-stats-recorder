@@ -102,8 +102,15 @@ class VideoController extends Controller
 			$stats = $video->stats()->select($columns[$graph])->where('type', $type);
 
 			if( isset($request->data['dateTime']) ){
-				$dateTime = Carbon::parse($request->data['dateTime'])->format('Y-m-d H:i');
-				$stats->whereBetween('created_at', [$dateTime.':00', $dateTime.':59']);
+				$dateTime = Carbon::parse($request->data['dateTime']);
+
+				if( $dateTime->second > 0 ){
+					$dateTime = $dateTime->format('Y-m-d H:i:s');
+					$stats->where('created_at', $dateTime);
+				} else {
+					$dateTime = $dateTime->format('Y-m-d H:i');
+					$stats->whereBetween('created_at', [$dateTime.':00', $dateTime.':59']);
+				}
 			}
 
 			if( !is_null($user) ){
