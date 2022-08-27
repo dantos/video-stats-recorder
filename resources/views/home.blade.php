@@ -30,7 +30,7 @@
                                         <span id="iconPlayPause" class="icon-play"></span>
                                     </div>
                                     <span id="videoTime" class="time-display">00:00:00</span>
-                                    <div id="fullscreenBtn" class="btn-fullscreen control-icon-layout hidden" title="Fullscreen">
+                                    <div id="fullscreenBtn" class="btn-fullscreen control-icon-layout" title="Fullscreen">
                                         <span class="icon-fullscreen-enter"></span>
                                     </div>
                                     <div id="bitrateListBtn" class="control-icon-layout" title="Bitrate List">
