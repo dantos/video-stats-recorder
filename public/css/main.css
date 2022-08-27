@@ -1,0 +1,12 @@
+.logo-container {
+    margin: 10px auto;
+}
+.app-logo {
+    max-width: 244px;
+}
+
+.app-logo-full {
+    padding: 10px;
+    min-height: 72px;
+    max-height: 488px;
+}
