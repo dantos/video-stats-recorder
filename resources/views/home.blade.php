@@ -19,6 +19,7 @@
                             </div>
                             <div id="stopButton" class="py-2 px-4 mt-8 bg-red-400 text-white rounded-md shadow-xl cursor-pointer hover:bg-red-500 hover:text-gray-100">Stop</div>
                             <div id="loadButton" class="py-2 px-4 mt-8 bg-indigo-400 text-white rounded-md shadow-xl cursor-pointer hover:bg-indigo-500 hover:text-gray-100">Load</div>
+                            <div id="pauseButton" class="py-2 px-4 mt-8 bg-gray-400 text-white rounded-md shadow-xl cursor-pointer hover:bg-gray-400 hover:text-gray-100">Pause</div>
                         </div>
                     </div>
                     <div class="flex">
@@ -97,6 +98,10 @@
 
             $('#stopButton').click(function (){
               stopVideo();
+            });
+
+            $('#pauseButton').click(function (){
+              pauseVideo();
             });
 
           });

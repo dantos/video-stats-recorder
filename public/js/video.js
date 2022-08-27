@@ -21,6 +21,9 @@ function setListeners() {
   player.on(dashjs.MediaPlayer.events['PLAYBACK_TIME_UPDATED'], startStatsTracking);
   player.on(dashjs.MediaPlayer.events['PLAYBACK_PAUSED'], onVideoPaused);
   player.on(dashjs.MediaPlayer.events['PLAYBACK_ENDED'], onVideoEnd);
+  player.on(dashjs.MediaPlayer.events['PLAYBACK_STARTED'], function (){
+    $('#pauseButton').text('Pause');
+  });
 }
 
 init();
@@ -43,6 +46,9 @@ function onVideoEnd() {
 }
 
 function onVideoPaused() {
+
+  $('#pauseButton').text('Resume');
+
   saveStats(videoStats, audioStats);
   clearData();
   if( Object.keys(timeElapsedCollection).length > 10 ){
